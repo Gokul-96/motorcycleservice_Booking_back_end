@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Confirmation = require('../models/confirmation');
+const Confirmation = require('../models/Confirmation');
 
 // GET request to fetch booking confirmation details
 router.get('/:bookingId', async (req, res) => {

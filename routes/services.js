@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router(); //  instance of the Express Router
 const Service = require('../models/Service');
 
-router.get('/', async (req, res) => {
+router.get('/services', async (req, res) => {
   try {
     const services = await Service.find();   //retrieve all the service from collection.
     res.json(services); //send the retrieved services as JSON response.
@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
 
 
 //Get service details based on serviceId
-router.get('/:serviceId', async (req, res) => {
+router.get('/services:id', async (req, res) => {
   try {
-    const serviceId = req.params.serviceId;
+    const serviceId = req.params.id;
     const service = await Service.findById(serviceId);
 
     if (!service) {

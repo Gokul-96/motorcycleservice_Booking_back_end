@@ -35,7 +35,7 @@ app.use('/services', servicesRoute);
 const PORT = process.env.PORT || 5000;
 
 // Used the service router for handling service-related routes
-app.use('/services', servicesRouter);
+app.get('/services', servicesRouter);
 
 // Mount the booking route
 app.post('/bookings', bookingsRouter);

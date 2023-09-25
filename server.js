@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const PORT = process.env.PORT || 5000;
 const servicesRoute = require('./routes/services');
 
 const servicesRouter = require('./routes/services');
@@ -21,33 +22,53 @@ const Service = require('./models/Service');
 // Create Express app
 const app = express();
 
-app.use(bodyParser.json());
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Configure CORS to allow requests from your React app
 app.use(cors()); // Enable CORS for all routes
 app.use(morgan('dev'));
 
-app.use('/services', servicesRoute);
+mongoose.connect(config.MONGO_URI,{ // Using the MONGO_URI from config - see env
+useNewUrlParser: true,
+useUnifiedTopology: true, }) 
+.then(() => {
+  // Connect to MongoDB using the actual URI from environment variables
+    console.log('Connected to MongoDB');
+// Call the function to insert/update services
+      insertOrUpdateServices();
 
-
-const PORT = process.env.PORT || 5000;
-
-// Used the service router for handling service-related routes
-app.get('/services', servicesRouter);
-
-// Mount the booking route
-app.post('/bookings', bookingsRouter);
-
-app.get('/confirmation/:bookingId', confirmationRouter);
-
-
-// Middleware for cache control
+      // Middleware for cache control
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+      
+// Mount the booking route
+app.post('/bookings', bookingsRouter);
+
+
+app.get('/confirmation/:bookingId', confirmationRouter);
+
+app.use('/services', servicesRoute);
+
+
+
+
+// Used the service router for handling service-related routes
+app.get('/services', servicesRouter);
+
+
+
+
 
 
 // Create a new service instance
@@ -123,16 +144,6 @@ async function insertOrUpdateServices() {
 }
 
 
-
-mongoose.connect(config.MONGO_URI,{ // Using the MONGO_URI from config - see env
-useNewUrlParser: true,
-useUnifiedTopology: true, }) 
-.then(() => {
-  // Connect to MongoDB using the actual URI from environment variables
-    console.log('Connected to MongoDB');
-// Call the function to insert/update services
-      insertOrUpdateServices();
-
     // Start the server
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
@@ -143,12 +154,7 @@ useUnifiedTopology: true, })
     console.error('Error connecting to MongoDB', error);
   });
 
-const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
 
 
 

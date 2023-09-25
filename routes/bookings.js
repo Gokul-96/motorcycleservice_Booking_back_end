@@ -8,12 +8,12 @@ const { v4: uuidv4 } = require('uuid');
 // Assuming you have a Booking model defined
 // const Booking = mongoose.model('Booking');
 
-// Inside your route or controller for creating bookings
+
 
 // Define a route with a route parameter for booking ID
 router.get('/:bookingId', (req, res) => {
   const bookingId = req.params.bookingId;
-  // You can now use 'bookingId' in your route handler logic
+  // You can now use bookingId in your route handler logic
   res.send(`Booking ID: ${bookingId}`);
 });
 
@@ -26,10 +26,6 @@ router.post('/bookings', async(req, res) => {
   const requestData = req.body;
   console.log('Received Booking Data:', requestData);
 
-  //  // Validate the service property
-  //  if (!requestData.service || !Array.isArray(requestData.service)) {
-  //   return res.status(400).json({ error: 'Invalid service data' });
-  // }
 
 // Convert service IDs to ObjectIds (assuming requestData.service is an array of string-based ObjectIds)
 requestData.service = requestData.service.map((id) =>new  mongoose.Types.ObjectId(id));

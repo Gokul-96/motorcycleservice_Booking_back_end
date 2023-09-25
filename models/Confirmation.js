@@ -6,7 +6,7 @@ const confirmationSchema = new mongoose.Schema({
   email: String,
   phoneNumber: String,
   district: String,
-  date: Date,
+  date: String,
   
 });
 

@@ -1,38 +1,38 @@
-//1. import moongoose lib...
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-
-//2.create mongodb model and define schema
 const bookingSchema = new mongoose.Schema({
- service: [{                                     //getting data from service component
+  bookingId: {
+    type: String,
+    default: uuidv4(), 
+    unique: true,
+  },
+  service: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
     required: true,
   }],
   name: {
-    type:String,
+    type: String,
     required: true,
   },
-  email:{ 
-    type:String,
+  email: {
+    type: String,
     required: true,
   },
-  phoneNumber : {
-    type:String,
+  phoneNumber: {
+    type: String,
     required: true,
   },
-  district : {
-    type:String,
+  district: {
+    type: String,
     required: true,
   },
   date: {
-    type:Date,
+    type: Date,
     required: true,
   }
 });
 
-
-
-//model - interact with the database, create booking model based on bookingSchema 
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;

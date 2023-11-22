@@ -11,7 +11,7 @@ const servicesRouter = require('./routes/services');
 const bookingsRouter = require('./routes/bookings');
 
 const confirmationRouter = require('./routes/confirmation');
- require('./models/Booking'); 
+
  const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
 
@@ -52,20 +52,49 @@ app.use((req, res, next) => {
   next();
 });
 
-
+const Booking = require('./models/Booking'); 
 
       
 // Mount the booking route
 app.post('/bookings', bookingsRouter);
 
+app.get('/confirmation/:bookingId', async (req, res) => {
+  const bookingId = req.params.bookingId;
 
-app.get('/confirmation/:bookingId', confirmationRouter);
+  try {
+    console.log('Fetching confirmation data for bookingId:', bookingId);
+
+    // Use the Booking model to query the database
+    const booking = await Booking.findOne({ bookingId });
+
+    console.log('Confirmation data:', booking);
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    // Send the confirmation data as a response
+    res.json({
+      bookingId: booking.bookingId,
+      serviceTitle: booking.service.title,
+      name: booking.name,
+      email: booking.email,
+      phoneNumber: booking.phoneNumber,
+      district: booking.district,
+      date: booking.date,
+    });
+  } catch (error) {
+    console.error('Error fetching confirmation data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 app.use('/services', servicesRoute);
 
 app.get('/auth', authRoutes);
 
-app.use('/user:id', authRoutes);
+
 
 app.use('/user', authMiddleware, getUserRoute);
 

@@ -50,12 +50,19 @@ const Booking = require('../models/Booking');
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
-const authMiddleware = require('./auth');
+const authMiddleware = require('../middleware');
 
 // Define a route for creating bookings
 router.post('/bookings', authMiddleware, async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming user information is stored in req.user after authentication
+    console.log('User in bookings route:', req.user);
+    const userId = req.user ? req.user._id : null;
+
+    if (!userId) {
+      console.error('User not authenticated');
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
     const bookingId = uuidv4();
     const requestData = req.body;
 

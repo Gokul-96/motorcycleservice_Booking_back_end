@@ -12,13 +12,14 @@ const bookingsRouter = require('./routes/bookings');
 
 const confirmationRouter = require('./routes/confirmation');
  require('./models/Booking'); 
-
+ const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
 
 // Import Service model
 const Service = require('./models/Service'); 
-
-
+const User = require('./models/User');
+const getUserRoute = require('./routes/getuser');
+const authMiddleware = require('./middleware');
 // Create Express app
 const app = express();
 
@@ -38,18 +39,20 @@ useUnifiedTopology: true, })
 // Call the function to insert/update services
       insertOrUpdateServices();
 
+      const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
       // Middleware for cache control
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
 
-const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
 
       
 // Mount the booking route
@@ -60,11 +63,56 @@ app.get('/confirmation/:bookingId', confirmationRouter);
 
 app.use('/services', servicesRoute);
 
+app.get('/auth', authRoutes);
+
+app.use('/user:id', authRoutes);
+
+app.use('/user', authMiddleware, getUserRoute);
+
 
 
 
 // Used the service router for handling service-related routes
 app.get('/services', servicesRouter);
+
+app.post('/signup', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(200).json('exist');
+    }
+
+    const newUser = new User({
+      username,
+      email,
+      password,
+    });
+
+    await newUser.save();
+    res.status(201).json('notexist');
+  } catch (error) {
+    res.status(500).json('error');
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    const check = await User.findOne({ email });
+
+    if (check) {
+      res.json('exist');
+    } else {
+      res.json('not exist');
+    }
+  } catch (e) {
+    res.json('not exist');
+  }
+});
 
 
 

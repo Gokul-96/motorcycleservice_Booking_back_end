@@ -14,7 +14,7 @@ const confirmationRouter = require('./routes/confirmation');
 
  const authRoutes = require('./routes/auth');
 const bodyParser = require('body-parser');
-
+   
 // Import Service model
 const Service = require('./models/Service'); 
 const User = require('./models/User');
@@ -222,8 +222,8 @@ async function insertOrUpdateServices() {
 
 
     // Start the server
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server is running on port ${PORT}`);
+    app.listen(config.PORT, '0.0.0.0', () => {
+      console.log(`Server is running on port ${config.PORT}`);
     });
    
   })

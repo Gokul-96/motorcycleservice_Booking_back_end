@@ -1,9 +1,10 @@
 const config = require('./utils/config');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const PORT = process.env.PORT || 5000;
+const { MONGO_URI, PORT } = process.env;
 const servicesRoute = require('./routes/services');
 
 const servicesRouter = require('./routes/services');
@@ -30,9 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Enable CORS for all routes
 app.use(morgan('dev'));
 
-mongoose.connect(config.MONGO_URI,{ // Using the MONGO_URI from config - see env
+mongoose.connect(MONGO_URI,{ // Using the MONGO_URI from config - see env
 useNewUrlParser: true,
-useUnifiedTopology: true, }) 
+useUnifiedTopology: true, 
+}) 
 .then(() => {
   // Connect to MongoDB using the actual URI from environment variables
     console.log('Connected to MongoDB');
@@ -45,7 +47,10 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
   console.log('Connected to MongoDB');
 });
-
+const connection = mongoose.connection;
+connection.once('open', () => {
+  console.log('MongoDB connection established successfully');
+});
       // Middleware for cache control
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -219,11 +224,14 @@ async function insertOrUpdateServices() {
     console.error('Error inserting/updating services:', error);
   }
 }
+// Middleware setup
+app.use(bodyParser.json());
 
 
+const PORT = process.env.PORT || 5000;
     // Start the server
-    app.listen(config.PORT, '0.0.0.0', () => {
-      console.log(`Server is running on port ${config.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
     });
    
   })

@@ -24,8 +24,7 @@ const Service = require('./models/Service');
 const User = require('./models/User');
 const getUserRoute = require('./routes/getuser');
 const authMiddleware = require('./middleware');
-// Create Express app
-const app = express();
+
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

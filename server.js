@@ -1,10 +1,13 @@
 const config = require('./utils/config');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { MONGO_URI, PORT } = process.env;
+
+//routes
 const servicesRoute = require('./routes/services');
 
 const servicesRouter = require('./routes/services');
@@ -14,7 +17,6 @@ const bookingsRouter = require('./routes/bookings');
 const confirmationRouter = require('./routes/confirmation');
 
  const authRoutes = require('./routes/auth');
-const bodyParser = require('body-parser');
    
 // Import Service model
 const Service = require('./models/Service'); 
@@ -23,15 +25,17 @@ const getUserRoute = require('./routes/getuser');
 const authMiddleware = require('./middleware');
 // Create Express app
 const app = express();
-
+//middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configure CORS to allow requests from your React app
 app.use(cors()); // Enable CORS for all routes
 app.use(morgan('dev'));
-
-mongoose.connect(MONGO_URI,{ // Using the MONGO_URI from config - see env
+// Middleware setup
+app.use(bodyParser.json());
+// Using the MONGO_URI from config - see env
+mongoose.connect(MONGO_URI,{ 
 useNewUrlParser: true,
 useUnifiedTopology: true, 
 }) 
@@ -45,7 +49,8 @@ useUnifiedTopology: true,
   console.error('Error connecting to MongoDB', error);
 });
 
-      const db = mongoose.connection;
+
+const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
@@ -100,15 +105,8 @@ app.get('/confirmation/:bookingId', async (req, res) => {
 
 
 app.use('/services', servicesRoute);
-
 app.get('/auth', authRoutes);
-
-
-
 app.use('/user', authMiddleware, getUserRoute);
-
-
-
 
 // Used the service router for handling service-related routes
 app.get('/services', servicesRouter);
@@ -228,8 +226,7 @@ async function insertOrUpdateServices() {
     console.error('Error inserting/updating services:', error);
   }
 }
-// Middleware setup
-app.use(bodyParser.json());
+
 
 
 

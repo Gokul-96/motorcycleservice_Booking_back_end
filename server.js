@@ -11,6 +11,7 @@ const app = express();
 app.use(cors()); 
 app.use(express.urlencoded({ extended: true }))
 //routes
+const servicesRouter = require('./routes/services');
 const servicesRoute = require('./routes/services');
 
 const bookingsRouter = require('./routes/bookings');
@@ -109,7 +110,7 @@ app.get('/auth', authRoutes);
 app.use('/user', authMiddleware, getUserRoute);
 
 // Used the service router for handling service-related routes
-app.get('/services', servicesRouter);
+app.get('/services', servicesRoute);
 
 app.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;

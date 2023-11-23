@@ -36,10 +36,14 @@ useNewUrlParser: true,
 useUnifiedTopology: true, 
 }) 
 .then(() => {
+  insertOrUpdateServices();
   // Connect to MongoDB using the actual URI from environment variables
     console.log('Connected to MongoDB');
 // Call the function to insert/update services
-      insertOrUpdateServices();
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB', error);
+});
 
       const db = mongoose.connection;
 
@@ -228,17 +232,12 @@ async function insertOrUpdateServices() {
 app.use(bodyParser.json());
 
 
-const PORT = process.env.PORT || 5000;
-    // Start the server
-    app.listen(PORT, () => {
+
+    // server start
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
     });
-   
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB', error);
-  });
-
+ 
 
 
 

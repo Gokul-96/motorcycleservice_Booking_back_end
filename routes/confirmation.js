@@ -1,37 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const Booking = require('../models/Booking');  // Import your Booking model or schema
+const Booking = require('../models/Booking');
+const Confirmation = require('../models/Confirmation'); // Import the Confirmation model
 
-// Define a route to handle confirmation data based on booking ID
 router.get('/confirmation/:bookingId', async (req, res) => {
   try {
     const bookingId = req.params.bookingId;
 
-    // Assuming you have a function in your model or elsewhere to fetch confirmation data
-    const confirmationData = await getConfirmationData(bookingId);
+    const booking = await Booking.findOne({ bookingId }).populate('service');
 
-    if (confirmationData) {
-      res.json(confirmationData); // Send confirmation data as a JSON response
-    } else {
-      // If no data is found for the given booking ID, respond with a 404 status
-      res.status(404).json({ error: 'Confirmation data not found' });
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
     }
+
+    const service = Array.isArray(booking.service) ? booking.service[0] : booking.service;
+
+    if (!service) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+
+    const confirmationData = {
+      bookingId: booking.bookingId,
+      name: booking.name,
+      email: booking.email,
+      phoneNumber: booking.phoneNumber,
+      district: booking.district,
+      date: booking.date,
+      service: {
+        title: service.title,
+        description: service.description,
+        price: service.price,
+        category: service.category,
+      },
+    };
+
+    // Save the confirmation data to the Confirmation collection
+    const confirmation = new Confirmation(confirmationData);
+    await confirmation.save();
+
+    console.log('Confirmation data saved:', confirmationData);
+
+    res.json(confirmationData);
   } catch (error) {
-    console.error('Error fetching confirmation data:', error);
+    console.error('Error fetching and saving confirmation data:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-// Function to fetch confirmation data based on booking ID
-async function getConfirmationData(bookingId) {
-  try {
-    // Use your Booking model to query the database based on the booking ID
-    const confirmationData = await Booking.findOne({ bookingId });
-    return confirmationData;
-  } catch (error) {
-    console.error('Error fetching confirmation data from database:', error);
-    throw error;
-  }
-}
 
 module.exports = router;

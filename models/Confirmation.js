@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const confirmationSchema = new mongoose.Schema({
   bookingId: String, 
-  serviceTitle: String,
   name: String,
   email: String,
   phoneNumber: String,

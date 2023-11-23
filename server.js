@@ -6,7 +6,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { MONGO_URI, PORT } = process.env;
-
+// Create Express app
+const app = express();
 app.use(cors()); 
 app.use(express.urlencoded({ extended: true }))
 //routes

@@ -7,10 +7,10 @@ const cors = require('cors');
 const morgan = require('morgan');
 const { MONGO_URI, PORT } = process.env;
 
+app.use(cors()); 
+app.use(express.urlencoded({ extended: true }))
 //routes
 const servicesRoute = require('./routes/services');
-
-const servicesRouter = require('./routes/services');
 
 const bookingsRouter = require('./routes/bookings');
 

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-// Get user details by ID
 router.get('/:id', async (req, res) => {
   const userId = req.params.id;
 
@@ -13,12 +12,11 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Return user data
+//Return user data
     res.json({
       _id: user._id,
       username: user.username,
       email: user.email,
-      // Add other properties as needed
     });
   } catch (error) {
     console.error('Error fetching user data:', error);

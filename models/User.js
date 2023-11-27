@@ -24,7 +24,7 @@ userSchema.pre('save', function (next) {
   });
 });
 
-// Compare user-entered password with hashed password.
+// Compare user entered password with hashed password.
 userSchema.methods.comparePassword = function (candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     if (err) return callback(err);

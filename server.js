@@ -13,15 +13,14 @@ app.use(express.urlencoded({ extended: true }))
 //routes
 const servicesRouter = require('./routes/services');
 const servicesRoute = require('./routes/services');
-
+const { insertOrUpdateServices } = require('./utils/servicesInitializer');
 const bookingsRouter = require('./routes/bookings');
 
 const confirmationRouter = require('./routes/confirmation');
 
  const authRoutes = require('./routes/auth');
    
-// Import Service model
-const Service = require('./models/Service'); 
+
 const User = require('./models/User');
 const getUserRoute = require('./routes/getuser');
 const authMiddleware = require('./middleware');
@@ -105,8 +104,8 @@ app.get('/confirmation/:bookingId', async (req, res) => {
 });
 
 
-app.use('/services', servicesRoute);
-app.get('/auth', authRoutes);
+app.use('/services', servicesRouter);
+app.use('/auth', authRoutes);
 app.use('/user', authMiddleware, getUserRoute);
 
 // Used the service router for handling service-related routes
@@ -152,86 +151,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-
-
-
-
-// Create a new service instance
-const newServiceData= [
-  {
-    id:1,
-    title: 'Oil Change',
-    description: 'Routine oil change service for motorcycles',
-    price: 50,
-    category: 'Maintenance',
-  },
-  {
-    id:2,
-    title: 'Tire Replacement',
-    description: 'Replace worn-out tires with new ones',
-    price: 120,
-    category: 'Maintenance',
-  },
-  {
-    id:3,
-    title: 'Engine Tune-up',
-    description: 'Optimize engine performance and efficiency',
-    price: 150,
-    category: 'Performance',
-  },
-  {
-    id:4,
-    title: 'Brake Inspection',
-    description: 'Thorough inspection and maintenance of brakes',
-    price: 60,
-    category: 'Safety',
-  },
-  {
-    id:5,
-    title: 'Chain Lubrication',
-    description: 'Lubricate motorcycle chain for smooth operation',
-    price: 20,
-    category: 'Maintenance',
-  },
-];
-
-// Function to insert or update services
-async function insertOrUpdateServices() {
-  try {
-    const services = await Service.find({});
-
-    if (services.length === 0) {
-      // If no services exist insert the new services
-      await Service.insertMany(newServiceData);
-      console.log('Initial services inserted successfully.');
-    } else {
-      // If services exist update them based on your logic
-      // can check if each service in newServiceData already exists
-      for (const newService of newServiceData) {
-        const existingService = services.find((service) => service.id === newService.id);
-
-        if (existingService) {
-          // Update the existing service with the new data
-          existingService.set(newService);
-          await existingService.save();
-          console.log(`Service updated: ${newService.title}`);
-        } else {
-          // Insert the new service if it doesn't exist
-          const service = new Service(newService);
-          await service.save();
-          console.log(`Service inserted: ${newService.title}`);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error inserting/updating services:', error);
-  }
-}
-
-
-
-
-    // server start
+// server start
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
     });

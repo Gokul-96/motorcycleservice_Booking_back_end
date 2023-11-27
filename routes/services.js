@@ -1,8 +1,8 @@
-//2.express route
-
+//express route
 const express = require('express');
-const router = express.Router(); //  instance of the Express Router
+const router = express.Router(); 
 const Service = require('../models/Service');
+const authMiddleware = require('../middleware');
 
 router.get('/services', async (req, res) => {
   try {
@@ -15,7 +15,7 @@ router.get('/services', async (req, res) => {
 });
 
 
-//Get service details based on serviceId
+
 router.get('/services:id', async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -32,4 +32,27 @@ router.get('/services:id', async (req, res) => {
   }
 });
 
+// DELETE service by ID
+router.delete('/services/:id', async (req, res) => {
+  let serviceId;
+
+  try {
+    // Convert the parameter to the correct type (e.g., Number)
+    serviceId = parseInt(req.params.id, 10);
+
+    // Check if the service with the given ID exists
+    const existingService = await Service.findOne({ id: serviceId });
+
+    if (!existingService) {
+      return res.status(404).send({ error: 'Service not found' });
+    }
+
+    // Implement code to delete the service with the specified ID from the database
+  
+    res.status(204).send(); // Respond with 204 No Content on successful deletion
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
 module.exports = router;

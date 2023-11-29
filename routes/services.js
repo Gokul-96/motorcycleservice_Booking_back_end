@@ -37,7 +37,7 @@ router.delete('/services/:id', async (req, res) => {
   let serviceId;
 
   try {
-    // Convert the parameter to the correct type (e.g., Number)
+ 
     serviceId = parseInt(req.params.id, 10);
 
     // Check if the service with the given ID exists
@@ -47,9 +47,9 @@ router.delete('/services/:id', async (req, res) => {
       return res.status(404).send({ error: 'Service not found' });
     }
 
-    // Implement code to delete the service with the specified ID from the database
+
   
-    res.status(204).send(); // Respond with 204 No Content on successful deletion
+    res.status(204).send(); 
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'Internal Server Error' });

@@ -19,18 +19,19 @@ router.post('/signup', (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { username, email, password } = req.body;
-
+  console.log('Login attempt with email:', email);
   try {
-    const check = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (check) {
-      res.json({ message: 'exist' });
+    if (user) {
+      // User exists, respond with 'exist'
+      res.json('exist');
     } else {
-      res.json({ message: 'not exist' });
+      // User does not exist, respond with 'not exist'
+      res.json('not exist');
     }
   } catch (e) {
-    res.status(500).json({ message: 'not exist' });
+    res.json('not exist');
   }
 });
-
 module.exports = router;

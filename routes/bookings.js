@@ -50,10 +50,10 @@ const Booking = require('../models/Booking');
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
-const authMiddleware = require('../middleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Define a route for creating bookings
-router.post('/bookings', authMiddleware, async (req, res) => {
+router.post('/bookings', authMiddleware.verifyToken, async (req, res) => {
   try {
     console.log('User in bookings route:', req.user);
     const userId = req.user ? req.user._id : null;

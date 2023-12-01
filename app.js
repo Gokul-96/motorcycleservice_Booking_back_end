@@ -8,6 +8,8 @@ const bookingsRouter = require('./routes/bookings');
 
 const app = express();
 
+app.use(cors());
+
 // Middleware
 app.use(cors()); // Enable CORS for all routes
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +17,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/services', servicesRouter);
+app.get('/services', servicesRouter);
 app.post('/bookings', bookingsRouter);
 
 // Confirmation route

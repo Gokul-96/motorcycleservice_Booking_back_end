@@ -16,7 +16,7 @@ router.get('/services', async (req, res) => {
 
 
 
-router.get('/services:id', async (req, res) => {
+router.get('/services/:id', async (req, res) => {
   try {
     const serviceId = req.params.id;
     const service = await Service.findById(serviceId);
@@ -41,7 +41,7 @@ router.delete('/services/:id', async (req, res) => {
     serviceId = parseInt(req.params.id, 10);
 
     // Check if the service with the given ID exists
-    const existingService = await Service.findOne({ id: serviceId });
+    const existingService = await Service.findOne({_id: serviceId });
 
     if (!existingService) {
       return res.status(404).send({ error: 'Service not found' });

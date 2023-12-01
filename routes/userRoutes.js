@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const authMiddleware = require('../middleware/authMiddleware');
 
+
 router.post('/signup', userController.signup);
 
 router.get('/List',userController.getUserList);

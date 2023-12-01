@@ -4,11 +4,16 @@ const morgan = require('morgan');
 const config = require('./utils/config');
 const app = require('./app');
 const { insertOrUpdateServices } = require('./utils/servicesInitializer');
+ 
+
+
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+
+
 
 // Database connection
 mongoose
@@ -23,6 +28,10 @@ mongoose
   .catch((error) => {
     console.error('Error connecting to MongoDB', error);
   });
+
+
+
+
 
 // Start the server
 app.listen(config.PORT, '0.0.0.0', () => {

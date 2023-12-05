@@ -40,26 +40,27 @@ const userController = {
 
   signin: async (req, res) => {
     try {
-      const { email, password } = req.body; // Change res.body to req.body
-
+      const { email, password } = req.body;
+  
       // find the user by email
       const user = await User.findOne({ email });
-      console.log('user',user)
-
+  
       if (!user) {
         return res.status(401).json({ message: 'Authentication failed' });
       }
-
+  
       // compare passwords
       const passwordMatch = await bcrypt.compare(password, user.password);
-
+  
       if (!passwordMatch) {
         return res.status(401).json({ message: 'Authentication failed' });
       }
-
+  
       // generate and send the JWT token
       const token = jwt.sign({ userId: user._id }, config.SECRET_KEY, { expiresIn: '1h' });
-      res.json({ token });
+  
+      // Include user data in the response
+      res.json({ token, user });
     } catch (error) {
       console.error('Error signing in user', error);
       res.status(500).json({ message: 'Internal server error' });

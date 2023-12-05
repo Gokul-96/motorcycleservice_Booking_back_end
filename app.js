@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const servicesRouter = require('./routes/services');
 const bookingsRouter = require('./routes/bookings');
-
+const userController = require('./controllers/userController');
 
 const app = express();
 
 app.use(cors());
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({origin: 'http://localhost:5173', credentials: true})); // Enable CORS for all routes
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.get('/services', servicesRouter);
 app.post('/bookings', bookingsRouter);
+app.get('/api/users/profile', userController.getProfile);
 
 // Confirmation route
 app.get('/confirmation/:bookingId', async (req, res) => {

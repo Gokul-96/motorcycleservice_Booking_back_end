@@ -37,3 +37,5 @@ mongoose
 app.listen(config.PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${config.PORT}`);
 });
+
+//node server.js

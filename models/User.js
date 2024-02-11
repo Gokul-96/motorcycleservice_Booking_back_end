@@ -12,7 +12,7 @@ const userSchema = new Schema({
   default:Date.now}, 
    //time stamp user when edited and  Updated
   updatedAt:{
-    type:Date,
+    type:Date,       
     default:Date.now
 }
 });

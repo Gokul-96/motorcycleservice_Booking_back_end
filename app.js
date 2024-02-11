@@ -5,7 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const servicesRouter = require('./routes/services');
 const bookingsRouter = require('./routes/bookings');
 const userController = require('./controllers/userController');
-
+const Booking=require('./models/Booking');
 const app = express();
 
 app.use(cors());
@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.get('/services', servicesRouter);
 app.post('/bookings', bookingsRouter);
-app.get('/api/users/profile', userController.getProfile);
+app.get('/api/users/Profile', userController.getProfile);
 
 // Confirmation route
 app.get('/confirmation/:bookingId', async (req, res) => {
@@ -52,3 +52,5 @@ app.get('/confirmation/:bookingId', async (req, res) => {
 });
 
 module.exports = app;
+
+//node server.js

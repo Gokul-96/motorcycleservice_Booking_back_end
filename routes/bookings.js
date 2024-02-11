@@ -9,12 +9,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/bookings', authMiddleware.verifyToken, async (req, res) => {
   try {
     console.log('User in bookings route:', req.user);
-    const userId = req.user ? req.user._id : null;
+    const userId = req.user && req.user.userId; // Accessing userId from req.user if it exists
 
     if (!userId) {
       console.error('User not authenticated');
-      res.status(401).json({ error: 'Unauthorized' });
-      return;
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     const bookingId = uuidv4();
     const requestData = req.body;

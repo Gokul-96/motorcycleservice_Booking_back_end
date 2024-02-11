@@ -40,11 +40,13 @@ const userController = {
 
   signin: async (req, res) => {
     try {
-      const { email, password } = req.body;
-  
+      console.log( await req.body)
+      const { email,password } = await req.body;
+console.log("email",email)
+ 
       // find the user by email
       const user = await User.findOne({ email });
-  
+  console.log("user", user);
       if (!user) {
         return res.status(401).json({ message: 'Authentication failed' });
       }
@@ -68,6 +70,7 @@ const userController = {
   },
 
   getProfile: async (req, res) => {
+    debugger
     try {
       const userId = req.userId;
       const user = await User.findById(userId, 'username email');
